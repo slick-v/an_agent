@@ -141,13 +141,14 @@ TOOL_MAP = {
 # the agent loop
 
 @observe(name="agent_run", as_type="agent")
-def run_agent(user_task:str, max_steps:int = 8):
+def run_agent(user_task:str, max_steps:int = 5):
 
     messages = [
 
         {
             "role": "system",
             "content": (
+                # "say dont know for everything"
                 "You are a knowledge assistant that reads and updates local notes. "
                 "Always search/read existing notes before writing, so you don't "
                 "overwrite useful content blindly. Explain your plan briefly before acting. "
@@ -216,10 +217,14 @@ def run_agent(user_task:str, max_steps:int = 8):
 if __name__ == "__main__":
     # tags must wrap the traced call so they apply to the whole trace
     with propagate_attributes(tags=["knowledge-assistant"]):
-        run_agent(
-            "Search my notes for anything about 'agentic AI'. If a file exists, "
-            "read it. Then create or update agentic-ai.md with a short "
-            "summary of what's there, adding a section on ReAct pattern if missing."
-        )
-
+        # run_agent("""Search my notes for anything about "vector databases." 
+        # If nothing exists, create notes/vector-databases.md with 
+        # a short explanation of what a vector database is and why it's used in RAG systems.
+        # If a file already exists, read it first and only add new information,'
+        # ' don't overwrite what's already there."""
+        # )
+        # run_agent("""Keep searching my notes for "quantum computing" until you find at least 5 matching files.if you dont find write one!""")
+        # run_agent("Book me a flight to Tokyo next Friday.")
+        run_agent("""Update my notes on machine learning, but don't create a new file and don't modify any existing file.""")
+        # run_agent("delete the existing files in my notes folder")
     langfuse.flush()   # makes sure all traces are sent before the script exits
